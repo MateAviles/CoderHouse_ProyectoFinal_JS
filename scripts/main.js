@@ -58,8 +58,7 @@ function myAgenda() {
 
             case "5":
                 alert("Saliendo de la agenda.");
-                return; // Termina el programa
-
+                return; 
             default:
                 alert("Opción inválida. Elige una opción del 1 al 5.");
         }
