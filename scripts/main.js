@@ -1,15 +1,49 @@
+let agenda = {};
 
-function insertContact(name) {
-    let phone = prompt("Introduce el teléfono del contacto: ");
+function showMessage(message) {
+    console.log(message);
+    alert(message)
+}
+
+function searchContactByName(name){
+    if (name in agenda) {
+        showMessage(`El número de teléfono de ${name} es ${agenda[name]}.`);
+    } else {
+        showMessage(`El contacto ${name} no existe.`);
+    }
+}
+
+function insertContact(name,phone) {  
     if (/^\d{1,11}$/.test(phone)) {
         agenda[name] = phone;
     } else {
-        alert("Número de teléfono inválido.");
+        showMessage("Número de teléfono inválido.");
+    }
+
+    return agenda;
+}
+
+function updateContact(name, contact){
+    if (name in agenda) {
+        deleteContact(name)
+    } 
+    insertContact(contact.name,contact.phone);
+}
+
+function deleteContact(name){
+    if (name in agenda) {
+        delete agenda[name];
+    } else {
+        showMessage(`El contacto ${name} no existe.`);
     }
 }
 
 function myAgenda() {
-    let agenda = {};
+    let name;
+    let phone;
+    let newName;
+    let newPhone;
+
     while (true) {
         
         let option = prompt(
@@ -21,46 +55,37 @@ function myAgenda() {
             "5. Finalizar"
         );
 
-        let name; 
 
         switch (option) {
             case "1":
                 name = prompt("Introduce el nombre del contacto: ");
-                if (name in agenda) {
-                    alert(`El número de teléfono de ${name} es ${agenda[name]}.`);
-                } else {
-                    alert(`El contacto ${name} no existe.`);
-                }
+                searchContactByName(name);
                 break;
 
             case "2":
                 name = prompt("Introduce el nombre del contacto: ");
-                insertContact(name);
+                phone = prompt("Introduce el teléfono del contacto: ");
+
+                insertContact(name,phone);
                 break;
 
             case "3":
                 name = prompt("Introduce el nombre del contacto a actualizar: ");
-                if (name in agenda) {
-                    insertContact(name);
-                } else {
-                    alert(`El contacto ${name} no existe.`);
-                }
+                newName = prompt("Introduce el nuevo nombre del contacto")
+                newPhone = prompt("Introduce el nuevo numero del contacto")
+                updateContact(name,{name:newName,phone:newPhone})
                 break;
 
             case "4":
                 name = prompt("Introduce el nombre del contacto a eliminar: ");
-                if (name in agenda) {
-                    delete agenda[name];
-                } else {
-                    alert(`El contacto ${name} no existe.`);
-                }
+                deleteContact(name)
                 break;
 
             case "5":
-                alert("Saliendo de la agenda.");
+                showMessage("Saliendo de la agenda.");
                 return; 
             default:
-                alert("Opción inválida. Elige una opción del 1 al 5.");
+                showMessage("Opción inválida. Elige una opción del 1 al 5.");
         }
     }
 }
