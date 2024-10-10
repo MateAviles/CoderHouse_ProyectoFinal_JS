@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         clearForm();
     }
 
-    
+    // Funcion de eliminación (si ve esto, lo puse para enlazar los cambios y no esten por separado)
     function deleteContact(name) {
         contacts = contacts.filter(contact => contact.name !== name);
         localStorage.setItem("contacts", JSON.stringify(contacts));
