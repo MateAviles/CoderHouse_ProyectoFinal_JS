@@ -1,118 +1,90 @@
-const agenda = [];
+document.addEventListener("DOMContentLoaded", function () {
+    let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
 
-function showMessage(message) {
-    console.log(message);
-    alert(message)
-}
+    const nameInput = document.getElementById("name");
+    const phoneInput = document.getElementById("phone");
+    const contactList = document.getElementById("contactList");
+    const totalContactsElement = document.getElementById("totalContacts");
+    const addContactBtn = document.getElementById("addContact");
+    const updateContactBtn = document.getElementById("updateContact");
 
-function searchContactByName(name){
-    let serchedContact = agenda.find(contact => contact.name === name)
+    // Función para renderizar los contactos
+    function renderContacts() {
+        contactList.innerHTML = "";
+        contacts.map(contact => {
+            const contactElement = document.createElement("div");
+            contactElement.className = "contact";
+            contactElement.innerHTML = `
+                <span>${contact.name} - ${contact.phone}</span>
+                <button class="delete" data-name="${contact.name}">Eliminar</button>
+            `;
+            contactList.appendChild(contactElement);
+        });
 
-    if (serchedContact) {
-        showMessage(`El número de teléfono de ${serchedContact.name} es ${serchedContact.phone}.`);
-    } else {
-        showMessage(`El contacto ${name} no existe.`);
-    }
-}
+        //  evento de los botones de eliminar
+        document.querySelectorAll(".delete").forEach(button => {
+            button.addEventListener("click", function () {
+                const contactName = this.getAttribute("data-name");
+                deleteContact(contactName);
+            });
+        });
 
-function insertContact(name,phone, printMessage) {
-    if (/^\d{1,11}$/.test(phone)) {
-        let newContact = {
-            name,
-            phone
-        }
-        
-        agenda.push(newContact);
-
-        if(printMessage){
-            showMessage(`Contacto agregado. Nombre: ${newContact.name}, Número: ${newContact.phone}`);
-        }
-    } else {
-        showMessage("Número de teléfono inválido.");
-    }
-}
-
-function updateContact(name, contact){
-    let searchedContact = agenda.find(contact => contact.name === name);
-    
-    if (searchedContact) {
-        deleteContact(name, false);
+        updateTotalContacts();
     }
 
-    insertContact(contact.name,contact.phone, false);
+    // Función para agregar contacto
+    function addContact() {
+        const name = nameInput.value.trim();
+        const phone = phoneInput.value.trim();
 
-    showMessage(`Contacto actualizado. Nombre: ${contact.name}, Número: ${contact.phone}`);
-}
+        if (name === "" || phone === "") return;
 
-function deleteContact(name, printMessage){
-    let serchedContact = agenda.find(contact => contact.name === name);
-
-    if (serchedContact) {
-        const contactIndex = agenda.indexOf(serchedContact);
-        
-        if(contactIndex > -1){
-            agenda.splice(contactIndex, 1);
-        }
-
-        if(printMessage){
-            showMessage(`Contacto ${name} eliminado.`)
-        }
-    } else {
-        showMessage(`El contacto ${name} no existe.`);
+        let newContact = { name, phone };
+        contacts.push(newContact);
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+        renderContacts();
+        clearForm();
     }
-}
 
-function myAgenda() {
-    let name;
-    let phone;
-    let newName;
-    let newPhone;
+    // Función para eliminar contacto
+    function deleteContact(name) {
+        contacts = contacts.filter(contact => contact.name !== name);
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+        renderContacts();
+    }
 
-    while (true) {
-        
-        let option = prompt(
-            "Selecciona una opción:\n\n" +
-            "1. Buscar un número de teléfono\n" +
-            "2. Ingresar un número de teléfono\n" +
-            "3. Actualizar un número de teléfono\n" +
-            "4. Eliminar un número de teléfono\n" +
-            "5. Finalizar"
-        );
+    // Función para actualizar contacto
+    function updateContact() {
+        const name = nameInput.value.trim();
+        const phone = phoneInput.value.trim();
 
+        if (name === "" || phone === "") return;
 
-        switch (option) {
-            case "1":
-                name = prompt("Introduce el nombre del contacto: ");
-                searchContactByName(name);
-                break;
-
-            case "2":
-                name = prompt("Introduce el nombre del contacto: ");
-                phone = prompt("Introduce el teléfono del contacto: ");
-
-                insertContact(name,phone, true);
-                break;
-
-            case "3":
-                name = prompt("Introduce el nombre del contacto a actualizar: ");
-                newName = prompt("Introduce el nuevo nombre del contacto");
-                newPhone = prompt("Introduce el nuevo numero del contacto");
-
-                updateContact(name,{name:newName,phone:newPhone});
-                break;
-
-            case "4":
-                name = prompt("Introduce el nombre del contacto a eliminar: ");
-                deleteContact(name, true);
-                break;
-
-            case "5":
-                showMessage("Saliendo de la agenda.");
-                return; 
-            default:
-                showMessage("Opción inválida. Elige una opción del 1 al 5.");
+        const contactIndex = contacts.findIndex(contact => contact.name === name);
+        if (contactIndex > -1) {
+            contacts[contactIndex].phone = phone;
+            localStorage.setItem("contacts", JSON.stringify(contacts));
+            renderContacts();
+            clearForm();
         }
     }
-}
 
-myAgenda();
+    // Función para actualizar el total de contactos usando reduce
+    function updateTotalContacts() {
+        const total = contacts.reduce((acc, contact) => acc + 1, 0);
+        totalContactsElement.innerText = total;
+    }
+
+    // Función para limpiar el formulario
+    function clearForm() {
+        nameInput.value = "";
+        phoneInput.value = "";
+    }
+
+    // Asignar eventos a los botones
+    addContactBtn.addEventListener("click", addContact);
+    updateContactBtn.addEventListener("click", updateContact);
+
+    // Renderizar la lista de contactos al cargar la página
+    renderContacts();
+});

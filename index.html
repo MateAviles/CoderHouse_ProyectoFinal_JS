@@ -3,9 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Agenda de Contactps</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            margin: 0;
+            padding: 130px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;   
+        }
+        .form-group {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #15d67c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button.delete {
+            background-color: #f7061e;
+        }
+        .contact-list {
+            margin-top: 20px;
+        }
+        .contact {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-    <script src = "scripts/main.js"></script>
+    <div class="container">
+        <h1>Agenda Telefonica</h1>
+        <div class="form_group">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" placeholder="Introduce el nombre">
+        </div>
+        <div class="form-group">
+            <label for="phone">Telefono:</label>
+            <input type="text" id="phone" placeholder="Introduce el teléfono">
+        </div>
+        <button id="addContact">Agregar Contacto</button>
+        <button id="updateContact">Actualizar Contacto</button>
+        <div class="contact-list" id="contactList"></div>
+        <div>
+            <strong>Total de contactos: </strong><span id="totalContacts">0</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
