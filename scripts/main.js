@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const addContactBtn = document.getElementById("addContact");
     const updateContactBtn = document.getElementById("updateContact");
 
-    // Función para renderizar los contactos
+    
     function renderContacts() {
         contactList.innerHTML = "";
         contacts.map(contact => {
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
             contactList.appendChild(contactElement);
         });
 
-        //  evento de los botones de eliminar
+        
         document.querySelectorAll(".delete").forEach(button => {
             button.addEventListener("click", function () {
                 const contactName = this.getAttribute("data-name");
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateTotalContacts();
     }
 
-    // Función para agregar contacto
+   
     function addContact() {
         const name = nameInput.value.trim();
         const phone = phoneInput.value.trim();
@@ -46,14 +46,14 @@ document.addEventListener("DOMContentLoaded", function () {
         clearForm();
     }
 
-    // Función para eliminar contacto
+    
     function deleteContact(name) {
         contacts = contacts.filter(contact => contact.name !== name);
         localStorage.setItem("contacts", JSON.stringify(contacts));
         renderContacts();
     }
 
-    // Función para actualizar contacto
+   
     function updateContact() {
         const name = nameInput.value.trim();
         const phone = phoneInput.value.trim();
@@ -69,22 +69,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Función para actualizar el total de contactos usando reduce
+    
     function updateTotalContacts() {
         const total = contacts.reduce((acc, contact) => acc + 1, 0);
         totalContactsElement.innerText = total;
     }
 
-    // Función para limpiar el formulario
+    
     function clearForm() {
         nameInput.value = "";
         phoneInput.value = "";
     }
 
-    // Asignar eventos a los botones
+    
     addContactBtn.addEventListener("click", addContact);
     updateContactBtn.addEventListener("click", updateContact);
 
-    // Renderizar la lista de contactos al cargar la página
+    
     renderContacts();
 });
