@@ -1,8 +1,4 @@
-let agenda = JSON.parse(localStorage.getItem("agenda")) || [];
-
-function saveToStorage() {
-  localStorage.setItem("agenda", JSON.stringify(agenda));
-}
+let agenda = [];
 
 function isValidName(name) {
   const namePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/; 
@@ -15,10 +11,10 @@ function isValidPhone(phone) {
 }
 
 function addContact(name, phone) {
-  const contactId = Date.now(); 
+  const contactId = Date.now(); // id unico
   const contactItem = { id: contactId, name, phone };
   agenda.push(contactItem);
-  saveToStorage(); 
+  saveToLocalStorage(); 
   return contactItem;
 }
 
@@ -29,7 +25,6 @@ function deleteContact(contactId) {
     saveToStorage(); 
   }
 }
-
 
 function updateContact(contactId, newName, newPhone) {
   const contact = agenda.find(contact => contact.id === contactId);
@@ -47,25 +42,26 @@ function renderContacts() {
     const li = document.createElement("li");
     li.className = "contact-item";
     li.innerHTML = `${contact.name} - ${contact.phone} 
-      <button class="update-btn" onclick="populateUpdateForm(${contact.id})">Actualizar</button>
-      <button onclick="deleteContact(${contact.id}); renderContacts();">Eliminar</button>`;
+      <button class="update-btn" onclick="showUpdateForm(${contact.id})">Actualizar</button>
+      <button class="delete-btn" onclick="deleteContact(${contact.id})">Eliminar</button>`;
     contactList.appendChild(li);
   });
+  document.getElementById("totalContacts").textContent = agenda.length;
 }
 
-document.getElementById("addContactBtn").addEventListener("click", () => {
+document.getElementById("addContactBtn").addEventListener("click" , () => {
   const nameInput = document.getElementById("nameInput");
   const phoneInput = document.getElementById("phoneInput");
   const name = nameInput.value.trim();
   const phone = phoneInput.value.trim();
 
   if (!isValidName(name)) {
-    alert("El nombre solo debe contener letras y espacios.");
+    alert("El nombre solo debe tener letras");
     return;
   }
 
   if (!isValidPhone(phone)) {
-    alert("El número de teléfono solo debe contener dígitos.");
+    alert("El número de teléfono solo debe tener numeros");
     return;
   }
 
@@ -89,17 +85,31 @@ document.getElementById("addContactBtn").addEventListener("click", () => {
   }
 });
 
-function populateUpdateForm(contactId) {
+function showUpdateForm(contactId) {
   const contact = agenda.find(contact => contact.id === contactId);
+  const newName = prompt("Introduce el nuevo nombre:", contact.name);
+  const newPhone = prompt("Introduce el nuevo número de teléfono:", contact.phone);
 
-  document.getElementById("nameInput").value = contact.name;
-  document.getElementById("phoneInput").value = contact.phone;
-
-  const addContactBtn = document.getElementById("addContactBtn");
-  addContactBtn.innerText = "Actualizar Contacto";
-  addContactBtn.dataset.mode = "update"; 
-  addContactBtn.dataset.contactId = contactId; 
+  if (newName && newPhone && nameRegex.test(newName) && phoneRegex.test(newPhone)) {
+    updateContact(contactId, newName, newPhone);
+  } else {
+    alert("Por favor ingresa un nombre válido y un número de teléfono válido.");
+  }
 }
 
-document.addEventListener("DOMContentLoaded", renderContacts);
+function saveToLocalStorage() {
+  localStorage.setItem("agenda", JSON.stringify(agenda));
+}
+
+function loadFromLocalStorage() {
+  const storedAgenda = localStorage.getItem("agenda");
+  if (storedAgenda) {
+    agenda = JSON.parse(storedAgenda);
+  }
+  renderContacts();
+}
+
+
+loadFromLocalStorage();
+
 
