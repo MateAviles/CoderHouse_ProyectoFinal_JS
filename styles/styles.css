@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif; 
+}
+
+input {
+    padding: 10px; 
+    margin-right: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+}
+
+button {
+    margin-left: 10px;
+    padding: 10px 20px; 
+    background-color: #4CAF50; 
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    cursor: pointer; 
+}
+
+.input-error{
+    border: 3px solid red;
+}
+
+.error-msg{
+    font-size: small;
+    color: red;
+}
+
+.app-title{
+    text-align: center;
+}
+
+.form-group{
+    padding: 5px 10px;
+}
+
+.text-area-form-group{
+    display: flex;
+    justify-content: start;
+    align-items: start;
+}
+
+.text-area-form-group label{
+    margin-right: 10px;
+}
+
+.form-group label{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.form-group input{
+    margin-left: 10px;
+}
+
+.contact-item {
+    margin: 10px 0; 
+    padding: 10px; 
+    border: 2px solid #ddd; 
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-contact-container{
+    margin: 10px;
+}
+
+.update-btn {
+    margin-left: 10px; 
+}
+
+.observation-text {
+    font-style: italic;
+    color:#555;
+    margin: 5px 0;
+    
+}
