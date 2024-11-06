@@ -1,7 +1,10 @@
 let agenda = [];
 
 const addContactBtn = document.getElementById("addContactBtn");
+const updateContactBtn = document.getElementById("updateContactBtn");
 const totalContacts = document.getElementById("totalContacts");
+
+let contactToUpdate = null; // Variable para guardar el contacto que se va a actualizar
 
 function isValidName(name) {
   const namePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
@@ -115,19 +118,44 @@ addContactBtn.addEventListener("click", () => {
 
 function showUpdateForm(contactId) {
   const contact = agenda.find(contact => contact.id === contactId);
-  const newName = prompt("Introduce el nuevo nombre:", contact.name);
-  const newPhone = prompt("Introduce el nuevo número de teléfono:", contact.phone);
-  const newObservation = prompt("Introduce la nueva observación:", contact.observation || '');
+  if (contact) {
+    contactToUpdate = contact;
 
-  if (newName && newPhone && isValidName(newName) && isValidPhone(newPhone)) {
-    contact.name = newName;
-    contact.phone = newPhone;
-    contact.observation = newObservation;
-    saveToLocalStorage();
-  } else {
-    alert("Ingrese un nombre y teléfono válido.");
+    document.getElementById("nameInput").value = contact.name;
+    document.getElementById("phoneInput").value = contact.phone;
+    document.getElementById("observationInput").value = contact.observation || '';
+
+    addContactBtn.style.display = "none";
+    updateContactBtn.style.display = "inline-block";
   }
 }
+
+updateContactBtn.addEventListener("click", () => {
+  if (contactToUpdate) {
+    const newName = document.getElementById("nameInput").value.trim();
+    const newPhone = document.getElementById("phoneInput").value.trim();
+    const newObservation = document.getElementById("observationInput").value.trim();
+
+    if (isValidName(newName) === true && isValidPhone(newPhone) === true) {
+      contactToUpdate.name = newName;
+      contactToUpdate.phone = newPhone;
+      contactToUpdate.observation = newObservation;
+
+     saveToLocalStorage();
+
+      document.getElementById("nameInput").value = "";
+      document.getElementById("phoneInput").value = "";
+      document.getElementById("observationInput").value = "";
+
+      addContactBtn.style.display = "inline-block";
+      updateContactBtn.style.display = "none";
+    } else {
+      alert("Por favor ingresa un nombre y teléfono válidos.");
+    }
+
+    contactToUpdate = null;
+  }
+});
 
 function saveToLocalStorage() {
   localStorage.setItem("agenda", JSON.stringify(agenda));

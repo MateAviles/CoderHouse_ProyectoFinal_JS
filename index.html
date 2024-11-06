@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles/styles.css">
     <script src="scripts/main.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
 <body>
     <div class="container">
@@ -22,16 +21,15 @@
             <input type="text" id="phoneInput" placeholder="Introduce el teléfono">
             <p id="number-error-msg" class="error-msg"></p>
         </div>
-            <div class="form-group text-area-form-group">
-                <label for="observationInput">Observación:</label>
-                <input type="text" id="observationInput" placeholder="Añadir observación">
-            </div>
-          
-            <p id="number-error-msg" class="error-msg"></p>
-           
+        <div class="form-group text-area-form-group">
+            <label for="observationInput">Observación:</label>
+            <input type="text" id="observationInput" placeholder="Añadir observación">
         </div>
+        <p id="number-error-msg" class="error-msg"></p>
 
         <button id="addContactBtn">Agregar</button>
+        <button id="updateContactBtn" style="display: none;">Guardar Cambios</button>
+
         <div class="contact-list" id="contactList"></div>
         <div class="total-contact-container">
             <strong>Total de contactos: </strong><span id="totalContacts">0</span>
@@ -39,4 +37,3 @@
     </div>
 </body>
 </html>
-        
