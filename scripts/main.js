@@ -1,34 +1,15 @@
-let agenda = [];
-
+let agenda = loadFromLocalStorage(); 
 const addContactBtn = document.getElementById("addContactBtn");
 const updateContactBtn = document.getElementById("updateContactBtn");
 const totalContacts = document.getElementById("totalContacts");
 
-let contactToUpdate = null; // Variable para guardar el contacto que se va a actualizar
-
-function isValidName(name) {
-  const namePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-  if (!name) return "Debe completar este campo.";
-  if (!namePattern.test(name)) return "Nombre incorrecto, debe contener solo letras.";
-  return true;
-}
-
-function isValidPhone(phone) {
-  const phonePattern = /^\d+$/;
-  if (!phone) return "Debe completar este campo.";
-  if (!phonePattern.test(phone)) return "Teléfono incorrecto, debe contener solo números.";
-  return true;
-}
-
-function contactoExist(name, phone) {
-  return agenda.some(contacto => contacto.name === name && contacto.phone === phone);
-}
+let contactToUpdate = null;
 
 function addContact(name, phone, observation) {
   const contactId = Date.now();
   const contactItem = { id: contactId, name, phone, observation };
   agenda.push(contactItem);
-  saveToLocalStorage();
+  saveToLocalStorage(agenda); 
   return contactItem;
 }
 
@@ -36,7 +17,7 @@ function deleteContact(contactId) {
   const index = agenda.findIndex(contact => contact.id === contactId);
   if (index !== -1) {
     agenda.splice(index, 1);
-    saveToLocalStorage();
+    saveToLocalStorage(agenda);
   }
 }
 
@@ -105,13 +86,13 @@ addContactBtn.addEventListener("click", () => {
     phoneErrorMsg.innerText = "";
   }
 
-  if (isValidContact && !contactoExist(name, phone)) {
+  if (isValidContact && !contactoExist(name, phone, agenda)) {
     addContact(name, phone, observation);
     renderContacts();
     nameInput.value = "";
     phoneInput.value = "";
     observationInput.value = "";
-  } else if (contactoExist(name, phone)) {
+  } else if (contactoExist(name, phone, agenda)) {
     alert("Este contacto ya existe con el mismo número.");
   }
 });
@@ -120,11 +101,9 @@ function showUpdateForm(contactId) {
   const contact = agenda.find(contact => contact.id === contactId);
   if (contact) {
     contactToUpdate = contact;
-
     document.getElementById("nameInput").value = contact.name;
     document.getElementById("phoneInput").value = contact.phone;
     document.getElementById("observationInput").value = contact.observation || '';
-
     addContactBtn.style.display = "none";
     updateContactBtn.style.display = "inline-block";
   }
@@ -132,42 +111,8 @@ function showUpdateForm(contactId) {
 
 updateContactBtn.addEventListener("click", () => {
   if (contactToUpdate) {
-    const newName = document.getElementById("nameInput").value.trim();
-    const newPhone = document.getElementById("phoneInput").value.trim();
-    const newObservation = document.getElementById("observationInput").value.trim();
-
-    if (isValidName(newName) === true && isValidPhone(newPhone) === true) {
-      contactToUpdate.name = newName;
-      contactToUpdate.phone = newPhone;
-      contactToUpdate.observation = newObservation;
-
-     saveToLocalStorage();
-
-      document.getElementById("nameInput").value = "";
-      document.getElementById("phoneInput").value = "";
-      document.getElementById("observationInput").value = "";
-
-      addContactBtn.style.display = "inline-block";
-      updateContactBtn.style.display = "none";
-    } else {
-      alert("Por favor ingresa un nombre y teléfono válidos.");
-    }
-
     contactToUpdate = null;
   }
 });
 
-function saveToLocalStorage() {
-  localStorage.setItem("agenda", JSON.stringify(agenda));
-  renderContacts();
-}
-
-function loadFromLocalStorage() {
-  const storedAgenda = localStorage.getItem("agenda");
-  if (storedAgenda) {
-    agenda = JSON.parse(storedAgenda);
-  }
-  renderContacts();
-}
-
-loadFromLocalStorage();
+renderContacts();
