@@ -2,15 +2,40 @@ const addContactBtn = document.getElementById("addContactBtn");
 const updateContactBtn = document.getElementById("updateContactBtn");
 const totalContacts = document.getElementById("totalContacts");
 
+const searchInput = document.getElementById("searchInput");
+const searchSelect = document.getElementById("searchSelect");
+
 let agenda = [];
+let filteredAgenda = agenda;
 let contactToUpdate = null;
+
+// Functions
 
 async function loadInitialContacts() {
   try {
-    const response = await fetch("contacts.json");
-    if (!response.ok) throw new Error("Error al cargar contactos");
-    const initialContacts = await response.json();
+    let initialContacts;
+
+    if(localStorage.getItem('agenda')){
+      initialContacts = JSON.parse(localStorage.getItem('agenda'))
+    }else{
+      const response = await fetch("data/contacts.json");
+      if (!response.ok)
+        throw new Error("Error al cargar contactos");
+      initialContacts = await response.json();
+    }
+
+    initialContacts = initialContacts
+      .map(initialContact => new Contact(
+        initialContact.id,
+        initialContact.name,
+        initialContact.phone,
+        initialContact.img,
+        initialContact.observation,
+        initialContact.rubro
+      ));
+
     agenda = [...agenda, ...initialContacts];
+    filteredAgenda = agenda;
     sortAgenda();
     renderContacts();
   } catch (error) {
@@ -19,10 +44,18 @@ async function loadInitialContacts() {
   }
 }
 
-function addContact(name, phone, observation, rubro) {
+function addContact(name, phone, img, observation, rubro) {
   const contactId = Date.now();
-  const contactItem = { id: contactId, name, phone, observation, rubro };
+  const contactItem = new Contact(
+    contactId,
+    name,
+    phone,
+    img,
+    observation,
+    rubro
+  );
   agenda.push(contactItem);
+  filteredAgenda = agenda;
   sortAgenda();
   saveToLocalStorage();
   renderContacts();
@@ -30,7 +63,7 @@ function addContact(name, phone, observation, rubro) {
 }
 
 function sortAgenda() {
-  agenda.sort((a, b) => a.name.localeCompare(b.name));
+  agenda.sort((a, b) => a.name > b.name);
 }
 
 function deleteContact(contactId) {
@@ -55,13 +88,16 @@ function renderContacts() {
   const contactList = document.getElementById("contactList");
   contactList.innerHTML = "";
 
-  agenda.forEach(contact => {
+  filteredAgenda.forEach(contact => {
     const li = document.createElement("li");
     li.className = "contact-item";
     li.id = contact.id;
 
     li.innerHTML = `
-      <div>${contact.name} - <span class="phone-highlight">${contact.phone}</span> - ${contact.rubro || "Sin rubro"}</div>
+      <div>
+        <img class="contact-img" src="${contact.img}" alt="Imagen contacto">
+        ${contact.name} - <span class="phone-highlight">${contact.phone}</span> - ${contact.rubro || "Sin rubro"}
+      </div>
       <div>
         <button class="show-observation-btn" onclick="showObservation(agenda.find(c => c.id === ${contact.id}))">Mostrar Observación</button>
         <button class="update-btn" onclick="showUpdateForm(${contact.id})">Actualizar</button>
@@ -74,42 +110,6 @@ function renderContacts() {
 
   totalContacts.textContent = `Total de contactos: ${agenda.length}`;
 }
-
-addContactBtn.addEventListener("click", () => {
-  const nameInput = document.getElementById("nameInput");
-  const phoneInput = document.getElementById("phoneInput");
-  const observationInput = document.getElementById("observationInput");
-  const rubroInput = document.getElementById("rubroInput");
-  
-  const name = nameInput.value.trim();
-  const phone = phoneInput.value.trim();
-  const observation = observationInput.value.trim();
-  const rubro = rubroInput.value.trim();
-
-  let isValidContact = true;
-  const nameCheck = isValidName(name);
-  const phoneCheck = isValidPhone(phone);
-
-  if (typeof nameCheck === "string") {
-    Swal.fire("Error", nameCheck, "error");
-    isValidContact = false;
-  }
-
-  if (typeof phoneCheck === "string") {
-    Swal.fire("Error", phoneCheck, "error");
-    isValidContact = false;
-  }
-
-  if (isValidContact && !contactoExist(name, phone)) {
-    addContact(name, phone, observation, rubro);
-    nameInput.value = "";
-    phoneInput.value = "";
-    observationInput.value = "";
-    rubroInput.value = "";
-  } else if (contactoExist(name, phone)) {
-    Swal.fire("Error", "Este contacto ya existe con el mismo número.", "error");
-  }
-});
 
 function contactoExist(name, phone) {
   return agenda.some(contact => contact.name === name && contact.phone === phone);
@@ -132,7 +132,60 @@ function showUpdateForm(contactId) {
   }
 }
 
-updateContactBtn.addEventListener("click", () => {
+function handleSearch(valueType, valueToSearch) {
+  filteredAgenda = agenda.filter(contact => contact[valueType].toLowerCase().includes(valueToSearch.toLowerCase()));
+
+  renderContacts();
+}
+
+// Events Listeners
+
+addContactBtn.addEventListener("click", (evt) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  const nameInput = document.getElementById("nameInput");
+  const phoneInput = document.getElementById("phoneInput");
+  const imgInput = document.getElementById("imgInput");
+  const observationInput = document.getElementById("observationInput");
+  const rubroInput = document.getElementById("rubroInput");
+  
+  const name = nameInput.value.trim();
+  const phone = phoneInput.value.trim();
+  const img = imgInput.value.trim();
+  const rubro = rubroInput.value.trim();
+  const observation = observationInput.value.trim();
+
+  let isValidContact = true;
+  const nameCheck = isValidName(name);
+  const phoneCheck = isValidPhone(phone);
+
+  if (typeof nameCheck === "string") {
+    Swal.fire("Error", nameCheck, "error");
+    isValidContact = false;
+  }
+
+  if (typeof phoneCheck === "string") {
+    Swal.fire("Error", phoneCheck, "error");
+    isValidContact = false;
+  }
+
+  if (isValidContact && !contactoExist(name, phone)) {
+    addContact(name, phone, img, observation, rubro);
+    nameInput.value = "";
+    phoneInput.value = "";
+    imgInput.value = "";
+    observationInput.value = "";
+    rubroInput.value = "";
+  } else if (contactoExist(name, phone)) {
+    Swal.fire("Error", "Este contacto ya existe con el mismo número.", "error");
+  }
+});
+
+updateContactBtn.addEventListener("click", (evt) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+
   if (contactToUpdate) {
     const nameInput = document.getElementById("nameInput");
     const phoneInput = document.getElementById("phoneInput");
@@ -149,16 +202,24 @@ updateContactBtn.addEventListener("click", () => {
     renderContacts();
     addContactBtn.style.display = "inline-block";
     updateContactBtn.style.display = "none";
+
+    nameInput.value = "";
+    phoneInput.value = "";
+    observationInput.value = "";
+    rubroInput.value = "";
   }
 });
 
+searchInput.addEventListener("input", (evt) => {
+  evt.stopPropagation();
+
+  handleSearch(searchSelect.value, evt.target.value);
+});
+searchSelect.addEventListener("change", (evt) =>{
+  evt.stopPropagation();
+
+  handleSearch(evt.target.value, searchInput.value);
+})
 
 loadInitialContacts();
 renderContacts();
-
-
-
- 
-
-
-

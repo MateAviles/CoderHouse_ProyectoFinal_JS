@@ -32,8 +32,3 @@ function isValidPhone(phone) {
 function contactoExist(name, phone, agenda) {
   return agenda.some(contact => contact.name === name && contact.phone === phone);
 }
-
-
-
-
-
