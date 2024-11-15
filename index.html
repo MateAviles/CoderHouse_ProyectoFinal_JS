@@ -1,40 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda de Contactos</title>
-    <link rel="stylesheet" href="styles/styles.css">
-    <script src="scripts/auxFunctions.js" defer></script> >
-    <script src="scripts/main.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda de Contactos</title>
+  <script src="scripts/auxFunctions.js" defer></script>
+  <script src="scripts/main.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="app-title">Agenda de Contactos</h1>
-        <div class="form-group">
-            <label for="nameInput">Nombre:</label>
-            <input type="text" id="nameInput" placeholder="Introduce el nombre">
-            <p id="nombre-error-msg" class="error-msg"></p>
-        </div>
-        <div class="form-group">
-            <label for="phoneInput">Teléfono:</label>
-            <input type="text" id="phoneInput" placeholder="Introduce el teléfono">
-            <p id="number-error-msg" class="error-msg"></p>
-        </div>
-        <div class="form-group text-area-form-group">
-            <label for="observationInput">Observación:</label>
-            <input type="text" id="observationInput" placeholder="Añadir observación">
-        </div>
-        <p id="number-error-msg" class="error-msg"></p>
+  <div class="container">
+    <h1 class="app-title">Agenda de Contactos</h1>
 
-        <button id="addContactBtn">Agregar</button>
-        <button id="updateContactBtn" style="display: none;">Guardar Cambios</button>
-
-        <div class="contact-list" id="contactList"></div>
-        <div class="total-contact-container">
-            <strong>Total de contactos: </strong><span id="totalContacts">0</span>
-        </div>
+    <div class="form-group">
+      <label for="nameInput">Nombre:</label>
+      <input type="text" id="nameInput" placeholder="Introduce el nombre">
     </div>
+
+    <div class="form-group">
+      <label for="phoneInput">Teléfono:</label>
+      <input type="text" id="phoneInput" placeholder="Introduce el teléfono">
+    </div>
+
+    <div class="form-group">
+      <label for="observationInput">Observación:</label>
+      <input type="text" id="observationInput" placeholder="Observación (opcional)">
+    </div>
+
+    <div class="form-group">
+      <label for="rubroInput">Rubro:</label>
+      <input type="text" id="rubroInput" placeholder="Introduce el rubro">
+    </div>
+
+    <button id="addContactBtn">Agregar Contacto</button>
+    <button id="updateContactBtn" style="display:none;">Actualizar Contacto</button>
+
+    <div id="totalContacts">Total: 0</div>
+
+    <div class="search-rubro">
+      <input type="text" id="rubroSearch" placeholder="Buscar por Rubro">
+      <button id="rubroSearchBtn">Buscar por Rubro</button>
+      <div id="rubroResult"></div>
+    </div>
+
+    <ul id="contactList"></ul>
+  </div>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+

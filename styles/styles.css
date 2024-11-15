@@ -79,3 +79,16 @@ button {
     margin: 5px 0;
     
 }
+
+.rubro-contact {
+    padding: 10px;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+    margin-top: 5px;
+    display: inline-block;
+  }
+  
+  .highlight-phone {
+    color: #007BFF;
+    font-weight: bold;
+  }

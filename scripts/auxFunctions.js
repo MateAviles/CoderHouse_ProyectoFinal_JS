@@ -1,28 +1,39 @@
+function saveToLocalStorage(agenda) {
+  localStorage.setItem("agenda", JSON.stringify(agenda));
+}
+
+function loadFromLocalStorage() {
+  const agenda = localStorage.getItem("agenda");
+  return agenda ? JSON.parse(agenda) : [];
+}
 
 function isValidName(name) {
-    const namePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-    if (!name) return "Debe completar este campo.";
-    if (!namePattern.test(name)) return "Nombre incorrecto, debe contener solo letras.";
-    return true;
+  if (!name) {
+    return "El nombre no puede estar vacío.";
   }
-  
-  function isValidPhone(phone) {
-    const phonePattern = /^\d+$/;
-    if (!phone) return "Debe completar este campo.";
-    if (!phonePattern.test(phone)) return "Teléfono incorrecto, debe contener solo números.";
-    return true;
+  const regex = /^[a-zA-Z\s]+$/;
+  if (!regex.test(name)) {
+    return "El nombre solo debe contener letras.";
   }
-  
-  function contactoExist(name, phone, agenda) {
-    return agenda.some(contacto => contacto.name === name && contacto.phone === phone);
+  return true;
+}
+
+function isValidPhone(phone) {
+  if (!phone) {
+    return "El número no puede estar vacío.";
   }
-  
-  function saveToLocalStorage(agenda) {
-    localStorage.setItem("agenda", JSON.stringify(agenda));
+  const regex = /^[0-9]{1,15}$/;
+  if (!regex.test(phone)) {
+    return "El número solo debe contener hasta 15 dígitos y solo números.";
   }
-  
-  function loadFromLocalStorage() {
-    const storedAgenda = localStorage.getItem("agenda");
-    return storedAgenda ? JSON.parse(storedAgenda) : [];
-  }
-  
+  return true;
+}
+
+function contactoExist(name, phone, agenda) {
+  return agenda.some(contact => contact.name === name && contact.phone === phone);
+}
+
+
+
+
+

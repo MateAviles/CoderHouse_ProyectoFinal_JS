@@ -1,0 +1,7 @@
+[   
+    {"id": 1, "name": "Juan", "phone": "2944111111", "observation": "amigaso", "rubro": "no tiene"},
+    {"id": 2, "name": "Ana", "phone": "2944222222", "observation": "resentida", "rubro": "moza"},
+    {"id": 3, "name": "Pedro", "phone": "2944333333", "observation": "gordo", "rubro": "maestro"}, 
+    {"id": 4, "name": "camilo", "phone":"2944444444", "observation":"flaco", "rubro":"arbitro"},
+    {"id": 5, "name": "dante", "phone":"2944555555", "observation":"cocina bien", "rubro":"jefe de cocina"}
+]
